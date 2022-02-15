@@ -86,7 +86,7 @@ def balance_change(entries, options_map):
     open_close_map = getters.get_account_open_close(entries)
 
     def update_t1_amounts(entry, t1_amounts, real_root):
-        entries_to_sum = [k for k,v in t1_amounts.items() if v is "NaN" and entry.date >= k[1]]
+        entries_to_sum = [k for k,v in t1_amounts.items() if v == "NaN" and entry.date >= k[1]]
         for bal_check in entries_to_sum:
             # Sum up the current balances for this account and its
             # sub-accounts. We want to support checks for parent accounts
