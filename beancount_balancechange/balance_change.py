@@ -5,7 +5,6 @@ __license__ = "GNU GPLv2"
 
 import collections
 import re
-import numpy as np
 
 from beancount.core.number import ONE
 from beancount.core.number import ZERO
@@ -71,7 +70,7 @@ def balance_change(entries, options_map):
     t1_dates = [entry.meta.get('since') for entry in balance_change_assertions]
     asserted_accounts = {get_account_from_entry(entry) for entry in balance_change_assertions}
     asserted_currencies = {get_expected_amount_from_entry(entry).currency for entry in balance_change_assertions}
-    t1_amounts = {(bank,date,currency):np.nan for bank,date,currency in zip(asserted_accounts, t1_dates, asserted_currencies)}
+    t1_amounts = {(bank,date,currency): "NaN" for bank,date,currency in zip(asserted_accounts, t1_dates, asserted_currencies)}
 
     # Add all children accounts of an asserted account to be calculated as well,
     # and pre-create these accounts, and only those (we're just being tight to
@@ -87,7 +86,7 @@ def balance_change(entries, options_map):
     open_close_map = getters.get_account_open_close(entries)
 
     def update_t1_amounts(entry, t1_amounts, real_root):
-        entries_to_sum = [k for k,v in t1_amounts.items() if v is np.nan and entry.date >= k[1]]
+        entries_to_sum = [k for k,v in t1_amounts.items() if v is "NaN" and entry.date >= k[1]]
         for bal_check in entries_to_sum:
             # Sum up the current balances for this account and its
             # sub-accounts. We want to support checks for parent accounts
