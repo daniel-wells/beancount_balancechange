@@ -10,7 +10,7 @@ from beancount_balancechange.balance_change import balance_change
 
 class TestBalanceChange(cmptest.TestCase):
 
-    @loader.load_doc(expect_errors=True)
+    @loader.load_doc(expect_errors=False)
     def test_balance_change_balanced(self, entries, _, options_map):
         """
         2020-01-01 open Equity:Opening-Balances GBP, USD
@@ -19,7 +19,7 @@ class TestBalanceChange(cmptest.TestCase):
 
         2020-01-03 txn "Example"
            Assets:BankA 100 GBP
-           Equity:Opening-Balances 100 GBP
+           Equity:Opening-Balances -100 GBP
 
         2020-01-05 txn "Example"
            Expenses:Food 50 GBP
@@ -31,7 +31,7 @@ class TestBalanceChange(cmptest.TestCase):
         new_entries, errors = balance_change(entries, options_map)
         self.assertEqual(len(errors), 0)
 
-    @loader.load_doc(expect_errors=True)
+    @loader.load_doc(expect_errors=False)
     def test_balance_change_multi_txs(self, entries, _, options_map):
         """
         2020-01-01 open Equity:Opening-Balances GBP, USD
@@ -40,7 +40,7 @@ class TestBalanceChange(cmptest.TestCase):
 
         2020-01-03 txn "Example"
            Assets:BankA 100 GBP
-           Equity:Opening-Balances 100 GBP
+           Equity:Opening-Balances -100 GBP
 
         2020-01-05 txn "Example"
            Expenses:Food 10 GBP
@@ -57,7 +57,7 @@ class TestBalanceChange(cmptest.TestCase):
         self.assertEqual(len(errors), 0)
 
 
-    @loader.load_doc(expect_errors=True)
+    @loader.load_doc(expect_errors=False)
     def test_balance_change_balanced_with_subaccounts(self, entries, _, options_map):
         """
         2020-01-01 open Equity:Opening-Balances GBP, USD
@@ -67,7 +67,7 @@ class TestBalanceChange(cmptest.TestCase):
 
         2020-01-03 txn "Example"
            Assets:BankA 100 GBP
-           Equity:Opening-Balances 100 GBP
+           Equity:Opening-Balances -100 GBP
 
         2020-01-05 txn "Example"
            Expenses:Food 50 GBP
@@ -80,7 +80,7 @@ class TestBalanceChange(cmptest.TestCase):
         self.assertEqual(len(errors), 0)
 
 
-    @loader.load_doc(expect_errors=True)
+    @loader.load_doc(expect_errors=False)
     def test_balance_change_unbalanced(self, entries, _, options_map):
         """
         2020-01-01 open Equity:Opening-Balances GBP, USD
@@ -89,7 +89,7 @@ class TestBalanceChange(cmptest.TestCase):
 
         2020-01-03 txn "Example"
            Assets:BankA 100 GBP
-           Equity:Opening-Balances 100 GBP
+           Equity:Opening-Balances -100 GBP
 
         2020-01-05 txn "Example"
            Expenses:Food 50 GBP
@@ -102,7 +102,7 @@ class TestBalanceChange(cmptest.TestCase):
         self.assertEqual(len(errors), 1)
 
 
-    @loader.load_doc(expect_errors=True)
+    @loader.load_doc(expect_errors=False)
     def test_balance_change_invalid_currency(self, entries, _, options_map):
         """
         2020-01-01 open Equity:Opening-Balances GBP, USD
@@ -111,7 +111,7 @@ class TestBalanceChange(cmptest.TestCase):
 
         2020-01-03 txn "Example"
            Assets:BankA 100 GBP
-           Equity:Opening-Balances 100 GBP
+           Equity:Opening-Balances -100 GBP
 
         2020-01-05 txn "Example"
            Expenses:Food 50 GBP
