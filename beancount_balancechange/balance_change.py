@@ -151,6 +151,7 @@ def balance_change(entries, options_map):
             # Check if the amount is within bounds of the expected amount.
             actual_change = amount.sub(balance_amount, starting_amount)
             diff_amount = amount.sub(actual_change, expected_change)
+            entry.meta['starting_amount'] = starting_amount
 
             if abs(diff_amount.number) > 0.005:
                 check_errors.append(
@@ -173,6 +174,6 @@ def balance_change(entries, options_map):
                 #    meta=entry.meta.copy(),
                 #    diff_amount=diff_amount)
 
-        #new_entries.append(entry)
+        new_entries.append(entry)
 
     return new_entries, check_errors
