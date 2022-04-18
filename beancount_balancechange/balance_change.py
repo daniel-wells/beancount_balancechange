@@ -32,7 +32,7 @@ def get_expected_amount_from_entry(entry):
 
 def get_account_from_entry(entry):
     return re.match(
-            '((Assets|Liabilities|Expenses|Equity)(:\w+)+)',
+            '((Assets|Liabilities|Expenses|Equity|Income)(:\w+)+)',
             get_expression_from_entry(entry)).group(0)
 
 
