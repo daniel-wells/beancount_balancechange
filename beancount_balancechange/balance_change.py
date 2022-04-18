@@ -154,6 +154,7 @@ def balance_change(entries, options_map):
             entry.meta['starting_amount'] = starting_amount
 
             if abs(diff_amount.number) > 0.005:
+                entry.meta['diff_amount'] = diff_amount
                 check_errors.append(
                     BalanceError(entry.meta,
                                  ("Balance change check failed for '{}': "
