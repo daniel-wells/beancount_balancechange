@@ -124,5 +124,29 @@ class TestBalanceChange(cmptest.TestCase):
         self.assertTrue("Invalid currency 'BTC'" in errors[0].message)
         self.assertEqual(len(errors), 2)
 
+
+    @loader.load_doc(expect_errors=False)
+    def test_balance_change_invalid_account(self, entries, _, options_map):
+        """
+        2020-01-01 open Equity:Opening-Balances GBP, USD
+        2020-01-01 open Assets:BankA:Checking GBP, USD
+        2020-01-01 open Expenses:Food GBP, USD
+
+        2020-01-03 txn "Example"
+           Assets:BankA:Checking 100 GBP
+           Equity:Opening-Balances -100 GBP
+
+        2020-01-05 txn "Example"
+           Expenses:Food 50 GBP
+           Assets:BankA:Checking -50 GBP
+
+        2020-01-07 custom "balance_change" Assets:BankA -50 BTC
+            since: 2020-01-04
+        """
+        new_entries, errors = balance_change(entries, options_map)
+        self.assertTrue("Invalid reference to unknown account 'Assets:BankA'" in errors[0].message)
+        self.assertEqual(len(errors), 1)
+
+
 if __name__ == '__main__':
     unittest.main()

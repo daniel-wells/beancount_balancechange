@@ -125,7 +125,7 @@ def balance_change(entries, options_map):
                 check_errors.append(
                     BalanceError(entry.meta,
                                  "Invalid reference to unknown account '{}'".format(
-                                     entry.account), entry))
+                                     get_account_from_entry(entry)), entry))
                 continue
 
             if (expected_change is not None and
