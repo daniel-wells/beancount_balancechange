@@ -4,6 +4,7 @@ __copyright__ = "Copyright (C) 2013-2016  Martin Blais, Daniel Wells 2022"
 __license__ = "GNU GPLv2"
 
 import collections
+import itertools
 import re
 
 from beancount.core.number import ONE
@@ -34,6 +35,22 @@ def get_account_from_entry(entry):
     return re.match(
             '((Assets|Liabilities|Expenses|Equity|Income)(:\w+)+)',
             get_expression_from_entry(entry)).group(0)
+
+# Entries come in sorted by date already, however we additionally sort
+# balance_change entries to be at the beginning of the day
+def sorted_entries(entries):
+    # Group entries by day, then sort them, then flatten back into an
+    # iterator
+    return (
+        entry
+        for (_, same_day_entries) in itertools.groupby(
+            entries, lambda entry: entry.date
+        )
+        for entry in sorted(
+            same_day_entries,
+            key=lambda entry: 0 if is_balance_change_entry(entry) else 1,
+        )
+    )
 
 
 def balance_change(entries, options_map):
@@ -100,7 +117,7 @@ def balance_change(entries, options_map):
             t1_amounts[bal_check] = balance_amount
 
 
-    for entry in entries:
+    for entry in sorted_entries(entries):
         if isinstance(entry, Transaction):
 
             update_t1_amounts(entry, t1_amounts, real_root)
