@@ -32,6 +32,29 @@ class TestBalanceChange(cmptest.TestCase):
         self.assertEqual(len(errors), 0)
 
     @loader.load_doc(expect_errors=False)
+    def test_balance_change_multiple_balance_changes(self, entries, _, options_map):
+        """
+        2020-01-01 open Equity:Opening-Balances GBP, USD
+        2020-01-01 open Assets:BankA GBP, USD
+        2020-01-01 open Assets:BankB GBP, USD
+
+        2020-01-03 txn "Example"
+           Assets:BankA 50 GBP
+           Equity:Opening-Balances -50 GBP
+
+        2020-01-03 txn "Example"
+           Assets:BankB 100 GBP
+           Equity:Opening-Balances -100 GBP
+
+        2020-01-07 custom "balance_change" Assets:BankA 50 GBP
+            since: 2020-01-02
+        2020-01-07 custom "balance_change" Assets:BankB 100 GBP
+            since: 2020-01-02
+        """
+        new_entries, errors = balance_change(entries, options_map)
+        self.assertEqual(len(errors), 0)
+
+    @loader.load_doc(expect_errors=False)
     def test_balance_change_multi_txs(self, entries, _, options_map):
         """
         2020-01-01 open Equity:Opening-Balances GBP, USD
