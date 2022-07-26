@@ -147,6 +147,13 @@ def balance_change(entries, options_map):
             # Get only the amount in the desired currency.
             balance_amount = subtree_balance.get_currency_units(expected_change.currency)
             starting_amount = t1_amounts[(get_account_from_entry(entry),entry.meta['since'], get_expected_amount_from_entry(entry).currency)]
+            # If starting_amount is still its initial "NaN" value then
+            # it means we have not yet come across any entries after
+            # the "since" time.
+            # This would mean the starting balance is the same as the
+            # balance as of the balance_change entry.date
+            if isinstance(starting_amount, str) and starting_amount == 'NaN':
+                starting_amount = balance_amount
 
             # Check if the amount is within bounds of the expected amount.
             actual_change = amount.sub(balance_amount, starting_amount)

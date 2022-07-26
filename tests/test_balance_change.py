@@ -170,6 +170,18 @@ class TestBalanceChange(cmptest.TestCase):
         self.assertTrue("Invalid reference to unknown account 'Assets:BankA'" in errors[0].message)
         self.assertEqual(len(errors), 1)
 
+    @loader.load_doc(expect_errors=False)
+    def test_balance_change_no_transactions_in_interval(self, entries, _, options_map):
+        """
+        2020-01-01 open Equity:Opening-Balances GBP, USD
+        2020-01-01 open Assets:BankA GBP, USD
+
+        2020-01-03 custom "balance_change" Assets:BankA 0 GBP
+            since: 2020-01-02
+        """
+        new_entries, errors = balance_change(entries, options_map)
+        self.assertEqual(len(errors), 0)
+
 
 if __name__ == '__main__':
     unittest.main()
