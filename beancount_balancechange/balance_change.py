@@ -68,8 +68,8 @@ def balance_change(entries, options_map):
                                  if is_balance_change_entry(entry)]
 
     t1_dates = [entry.meta.get('since') for entry in balance_change_assertions]
-    asserted_accounts = {get_account_from_entry(entry) for entry in balance_change_assertions}
-    asserted_currencies = {get_expected_amount_from_entry(entry).currency for entry in balance_change_assertions}
+    asserted_accounts = [get_account_from_entry(entry) for entry in balance_change_assertions]
+    asserted_currencies = [get_expected_amount_from_entry(entry).currency for entry in balance_change_assertions]
     t1_amounts = {(bank,date,currency): "NaN" for bank,date,currency in zip(asserted_accounts, t1_dates, asserted_currencies)}
 
     # Add all children accounts of an asserted account to be calculated as well,
