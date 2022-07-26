@@ -147,6 +147,28 @@ class TestBalanceChange(cmptest.TestCase):
         self.assertTrue("Invalid currency 'BTC'" in errors[0].message)
         self.assertEqual(len(errors), 2)
 
+    @loader.load_doc(expect_errors=False)
+    def test_balance_change_is_as_of_start_of_day(self, entries, _, options_map):
+        """
+        2020-01-01 open Equity:Opening-Balances GBP, USD
+        2020-01-01 open Assets:BankA:Checking GBP, USD
+        2020-01-01 open Expenses:Food GBP, USD
+
+        2020-01-02 txn "Example"
+           Assets:BankA:Checking 50 GBP
+           Equity:Opening-Balances -50 GBP
+
+        2020-01-03 txn "Example"
+           Assets:BankA:Checking 100 GBP
+           Equity:Opening-Balances -100 GBP
+
+        ;; balance_change is considered to be at the beginning of the
+        ;; day regardless of order of entries in the file
+        2020-01-03 custom "balance_change" Assets:BankA:Checking 50 GBP
+            since: 2020-01-01
+        """
+        new_entries, errors = balance_change(entries, options_map)
+        self.assertEqual(len(errors), 0)
 
     @loader.load_doc(expect_errors=False)
     def test_balance_change_invalid_account(self, entries, _, options_map):
